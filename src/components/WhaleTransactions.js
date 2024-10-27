@@ -43,7 +43,7 @@ const WhaleTransactions = () => {
 
   return (
     <div>
-      <h1>Whale Transactions (Over 1 BTC)</h1>
+      <h1>Whale Transactions (Over 0.01 BTC)</h1>
       {error ? (
         <p>{error}</p>
       ) : (

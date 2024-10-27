@@ -10,17 +10,20 @@ const WhaleTransactions = () => {
       try {
         const response = await axios.get('/api/whaleProxy');
         console.log('API Response:', response.data); // Log the API response
-
-        if (response.data && Array.isArray(response.data.transactions)) {
-          // Check for new transactions
-          const newTransactions = response.data.transactions.filter(transaction => {
-            return !transactions.some(existingTransaction => existingTransaction.id === transaction.id);
-          });
-
-          // Update transactions if there are new ones
-          if (newTransactions.length > 0) {
-            setTransactions(prevTransactions => [...newTransactions, ...prevTransactions]);
+    
+        // Ensure the response has transactions
+        if (response.data && response.data.transactions && Array.isArray(response.data.transactions)) {
+          // If there are new transactions, update the state
+          if (response.data.transactions.length > 0) {
+            setTransactions(prevTransactions => {
+              const newTransactions = response.data.transactions.filter(transaction => 
+                !prevTransactions.some(existingTransaction => existingTransaction.id === transaction.id)
+              );
+              return [...newTransactions, ...prevTransactions];
+            });
             setError(null);
+          } else {
+            setError('No transactions found.');
           }
         } else {
           setError('No transactions found.');
@@ -30,6 +33,7 @@ const WhaleTransactions = () => {
         setError('Failed to fetch transactions');
       }
     };
+    
 
     // Initial fetch
     fetchTransactions();
@@ -47,17 +51,22 @@ const WhaleTransactions = () => {
       {error ? (
         <p>{error}</p>
       ) : (
-        transactions.map((transaction) => (
-          <div key={transaction.id} style={{ border: '1px solid #ddd', padding: '10px', margin: '10px 0' }}>
-            <p><strong>Transaction ID:</strong> {transaction.hash}</p>
-            <p><strong>Amount:</strong> {transaction.amount} {transaction.symbol}</p>
-            <p><strong>From:</strong> {transaction.from.owner_type} ({transaction.from.address})</p>
-            <p><strong>To:</strong> {transaction.to.owner_type} ({transaction.to.address})</p>
-          </div>
-        ))
+        transactions.length > 0 ? (
+          transactions.map(transaction => (
+            <div key={transaction.id} style={{ border: '1px solid #ddd', padding: '10px', margin: '10px 0' }}>
+              <p><strong>Transaction ID:</strong> {transaction.hash}</p>
+              <p><strong>Amount:</strong> {transaction.amount} {transaction.symbol}</p>
+              <p><strong>From:</strong> {transaction.from.owner_type} ({transaction.from.address})</p>
+              <p><strong>To:</strong> {transaction.to.owner_type} ({transaction.to.address})</p>
+            </div>
+          ))
+        ) : (
+          <p>No transactions found.</p>
+        )
       )}
     </div>
   );
+  
 };
 
 export default WhaleTransactions;

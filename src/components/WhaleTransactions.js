@@ -1,3 +1,5 @@
+// src/components/WhaleTransactions.js
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -7,25 +9,21 @@ const WhaleTransactions = () => {
 
   useEffect(() => {
     const fetchTransactions = async () => {
-        try {
-          const response = await axios.get(
-            `https://api.whale-alert.io/v1/transactions`,
-            {
-              params: {
-                api_key: process.env.REACT_APP_WHALE_API_KEY,
-                min_value: 10 * 100000000, // 10 BTC in satoshis
-                currency: 'btc'
-              }
-            }
-          );
-          console.log(response); // Log response here
+      try {
+        // Call the server-side API route to bypass CORS
+        const response = await axios.get('/api/whaleProxy');
+        
+        // Check if the response contains the transactions data
+        if (response.data && response.data.transactions) {
           setTransactions(response.data.transactions);
-        } catch (err) {
-          console.error(err); // Log error for debugging
-          setError('Failed to fetch transactions');
+        } else {
+          setError('No transactions found.');
         }
-      };
-      
+      } catch (err) {
+        console.error('Error fetching transactions:', err);
+        setError('Failed to fetch transactions');
+      }
+    };
 
     fetchTransactions();
   }, []);
@@ -48,6 +46,5 @@ const WhaleTransactions = () => {
     </div>
   );
 };
-console.log("API Key:", process.env.REACT_APP_WHALE_API_KEY);
 
 export default WhaleTransactions;

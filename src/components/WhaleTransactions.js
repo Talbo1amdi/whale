@@ -9,10 +9,10 @@ const WhaleTransactions = () => {
     const fetchTransactions = async () => {
       try {
         const response = await axios.get('/api/whaleProxy');
-        console.log('API Response:', response.data);
+        console.log('API Response:', response.data); // Log the API response
 
         if (response.data && Array.isArray(response.data.transactions)) {
-          // Filter for new transactions (optional)
+          // Check for new transactions
           const newTransactions = response.data.transactions.filter(transaction => {
             return !transactions.some(existingTransaction => existingTransaction.id === transaction.id);
           });
@@ -26,7 +26,7 @@ const WhaleTransactions = () => {
           setError('No transactions found.');
         }
       } catch (err) {
-        console.error('Error fetching transactions:', err);
+        console.error('Error fetching data from Whale API:', err.response ? err.response.data : err.message); // Log the error
         setError('Failed to fetch transactions');
       }
     };

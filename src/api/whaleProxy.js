@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     const response = await axios.get('https://api.whale-alert.io/v1/transactions', {
       params: {
         api_key: process.env.REACT_APP_WHALE_API_KEY,
-        min_value: 10 * 100000000,
+        min_value: 10 * 1000000,
         currency: 'btc'
       }
     });

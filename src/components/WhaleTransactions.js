@@ -10,13 +10,12 @@ const WhaleTransactions = () => {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        // Call the server-side API route to bypass CORS
         const response = await axios.get('/api/whaleProxy');
-        
-        // Check if the response contains the transactions data
-        if (response.data && response.data.transactions) {
+        console.log('API Response:', response.data); // Log the API response
+    
+        if (response.data && Array.isArray(response.data.transactions)) {
           setTransactions(response.data.transactions);
-          setError(null); // Clear error if data is successfully fetched
+          setError(null);
         } else {
           setError('No transactions found.');
         }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import handler from '../api/whaleProxy';
 
 const WhaleTransactions = () => {
   const [transactions, setTransactions] = useState([]);
@@ -36,10 +37,12 @@ const WhaleTransactions = () => {
     
 
     // Initial fetch
-    fetchTransactions();
+    // fetchTransactions();
+    handler()
+
 
     // Set up an interval to fetch transactions every 10 seconds
-    const intervalId = setInterval(fetchTransactions, 10000);
+    const intervalId = setInterval(handler, 10000);
 
     // Clear interval on component unmount to prevent memory leaks
     return () => clearInterval(intervalId);

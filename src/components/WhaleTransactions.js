@@ -16,6 +16,7 @@ const WhaleTransactions = () => {
         // Check if the response contains the transactions data
         if (response.data && response.data.transactions) {
           setTransactions(response.data.transactions);
+          setError(null); // Clear error if data is successfully fetched
         } else {
           setError('No transactions found.');
         }
@@ -25,12 +26,19 @@ const WhaleTransactions = () => {
       }
     };
 
+    // Initial fetch
     fetchTransactions();
+
+    // Set up an interval to fetch transactions every 10 seconds
+    const intervalId = setInterval(fetchTransactions, 10000);
+
+    // Clear interval on component unmount to prevent memory leaks
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
     <div>
-      <h1>Whale Transactions (Over 10 BTC)</h1>
+      <h1>Whale Transactions (Over 1 BTC)</h1>
       {error ? (
         <p>{error}</p>
       ) : (

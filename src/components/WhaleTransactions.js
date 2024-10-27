@@ -1,5 +1,3 @@
-// src/components/WhaleTransactions.js
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -11,11 +9,19 @@ const WhaleTransactions = () => {
     const fetchTransactions = async () => {
       try {
         const response = await axios.get('/api/whaleProxy');
-        console.log('API Response:', response.data); // Log the API response
-    
+        console.log('API Response:', response.data);
+
         if (response.data && Array.isArray(response.data.transactions)) {
-          setTransactions(response.data.transactions);
-          setError(null);
+          // Filter for new transactions (optional)
+          const newTransactions = response.data.transactions.filter(transaction => {
+            return !transactions.some(existingTransaction => existingTransaction.id === transaction.id);
+          });
+
+          // Update transactions if there are new ones
+          if (newTransactions.length > 0) {
+            setTransactions(prevTransactions => [...newTransactions, ...prevTransactions]);
+            setError(null);
+          }
         } else {
           setError('No transactions found.');
         }
@@ -33,7 +39,7 @@ const WhaleTransactions = () => {
 
     // Clear interval on component unmount to prevent memory leaks
     return () => clearInterval(intervalId);
-  }, []);
+  }, [transactions]);
 
   return (
     <div>
